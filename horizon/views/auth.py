@@ -65,10 +65,14 @@ class LoginView(forms.ModalFormView):
 
     def get_initial(self):
         initial = super(LoginView, self).get_initial()
-        current_region = self.request.session.get('region_endpoint', None)
-        requested_region = self.request.GET.get('region', None)
-        regions = dict(getattr(settings, "AVAILABLE_REGIONS", []))
+        current_region = self.request.session.get('region', None)
+        requested_region = self.request.POST.get('region', None)
+        if requested_region:
+           requested_region = (requested_region.encode('ascii'),requested_region.split('_')[0].encode('ascii'))        
+        regions = getattr(settings, "AVAILABLE_REGIONS", [])
+        regions = [(region[1]+"_"+region[0],region[1]) for region in regions] 
         if requested_region in regions and requested_region != current_region:
+            LOG.debug("Entered here")
             initial.update({'region': requested_region})
         return initial
 

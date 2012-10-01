@@ -62,12 +62,14 @@ def horizon(request):
     if request.user.is_authenticated() and needs_tenants:
         context['authorized_tenants'] = request.user.authorized_tenants
 
+
+
     # Region context/support
     available_regions = getattr(settings, 'AVAILABLE_REGIONS', [])
     regions = {'support': len(available_regions) > 1,
                'current': {'endpoint': request.session.get('region_endpoint'),
                            'name': request.session.get('region_name')},
-               'available': [{'endpoint': region[0], 'name':region[1]} for
+               'available': [{'endpoint': region[1]+"_"+region[0], 'name':region[1]} for
                              region in available_regions]}
     context['regions'] = regions
 

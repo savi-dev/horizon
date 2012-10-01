@@ -59,14 +59,18 @@ class Service(base.APIDictWrapper):
     def __repr__(self):
         return "<Service: %s>" % unicode(self)
 
+def region_set_backend():
+    if hasattr(settings, "OPENSTACK_KEYSTONE_BACKEND"):
+        return settings.OPENSTACK_KEYSTONE_BACKEND['name']
+    else:
+        return 'unknown'
 
 def _get_endpoint_url(request, endpoint_type, catalog=None):
     if getattr(request.user, "service_catalog", None):
         return base.url_for(request,
                             service_type='identity',
                             endpoint_type=endpoint_type)
-    return request.session.get('region_endpoint',
-                               getattr(settings, 'OPENSTACK_KEYSTONE_URL'))
+    return request.session.get('region_endpoint').split('_')[1] or getattr(settings, 'OPENSTACK_KEYSTONE_URL')
 
 
 def keystoneclient(request, username=None, password=None, tenant_id=None,
@@ -124,6 +128,7 @@ def keystoneclient(request, username=None, password=None, tenant_id=None,
 
     # Fetch the correct endpoint if we've re-scoped the token.
     catalog = getattr(conn, 'service_catalog', None)
+    LOG.debug(catalog)
     if catalog and "serviceCatalog" in catalog.catalog.keys():
         catalog = catalog.catalog['serviceCatalog']
     endpoint = _get_endpoint_url(request, endpoint_type, catalog)
