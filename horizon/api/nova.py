@@ -212,6 +212,10 @@ def cinderclient(request):
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     LOG.debug('cinderclient connection created using token "%s" and url "%s"' %
               (request.user.token.id, url_for(request, 'volume')))
+    url = url_for(request, 'volume')
+    if url == None:
+       return None 
+    #LOG.debug("YYYYYYYYYY %s" % url_for(request, 'volume'))
     c = cinder_client.Client(request.user.username,
                              request.user.token.id,
                              project_id=request.user.tenant_id,
@@ -513,7 +517,11 @@ def volume_list(request, search_opts=None):
     To see all volumes in the cloud as an admin you can pass in a special
     search option: {'all_tenants': 1}
     """
-    return cinderclient(request).volumes.list(search_opts=search_opts)
+    client =  cinderclient(request)
+    if client:
+       return cinderclient(request).volumes.list(search_opts=search_opts)
+    else:
+       return []
 
 
 def volume_get(request, volume_id):
