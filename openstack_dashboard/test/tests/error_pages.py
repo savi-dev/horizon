@@ -1,6 +1,7 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-#    Copyright 2012 OpenStack LLC
+# Copyright (c) 2012 OpenStack, LLC.
+# All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -14,22 +15,20 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-version_info = {'branch_nick': u'LOCALBRANCH',
-                'revision_id': 'LOCALREVISION',
-                'revno': 0}
+from os import path
+
+from django.conf import settings
+
+from horizon import exceptions
+from openstack_dashboard.test import helpers as test
 
 
-HORIZON_VERSION = ['2012', '2', '5']
-YEAR, COUNT, REVISION = HORIZON_VERSION
-FINAL = False   # This becomes true at Release Candidate time
+class ErrorPageTests(test.TestCase):
+    """ Tests for error pages """
+    urls = 'openstack_dashboard.test.error_pages_urls'
 
-
-def canonical_version_string():
-    return '.'.join(filter(None, HORIZON_VERSION))
-
-
-def version_string():
-    if FINAL:
-        return canonical_version_string()
-    else:
-        return '%s-dev' % (canonical_version_string(),)
+    def test_500_error(self):
+        TEMPLATE_DIRS = (path.join(settings.ROOT_PATH, 'templates'),)
+        with self.settings(TEMPLATE_DIRS=TEMPLATE_DIRS):
+            response = self.client.get('/500/')
+            self.assertTrue('Server error' in response.content)
