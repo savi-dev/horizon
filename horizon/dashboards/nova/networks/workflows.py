@@ -19,7 +19,7 @@ import logging
 import netaddr
 
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from horizon import api
 from horizon import exceptions
@@ -89,8 +89,14 @@ class CreateSubnetInfoAction(workflows.Action):
                     'clear "Create Subnet" checkbox.')
             raise forms.ValidationError(msg)
         if cidr:
-            if netaddr.IPNetwork(cidr).version is not ip_version:
+            subnet = netaddr.IPNetwork(cidr)
+            if subnet.version != ip_version:
                 msg = _('Network Address and IP version are inconsistent.')
+                raise forms.ValidationError(msg)
+            if (ip_version == 4 and subnet.prefixlen == 32) or \
+                    (ip_version == 6 and subnet.prefixlen == 128):
+                msg = _("The subnet in the Network Address is too small (/%s)."
+                        % subnet.prefixlen)
                 raise forms.ValidationError(msg)
         if gateway_ip:
             if netaddr.IPAddress(gateway_ip).version is not ip_version:
@@ -128,8 +134,9 @@ class CreateNetwork(workflows.Workflow):
             self.context['net_id'] = network.id
             msg = _('Network "%s" was successfully created.') % network.name
             LOG.debug(msg)
-        except:
-            msg = _('Failed to create network "%s".') % data['net_name']
+        except Exception as e:
+            msg = (_('Failed to create network "%(network)s": %(reason)s') %
+                   {"network": data['net_name'], "reason": e})
             LOG.info(msg)
             redirect = reverse('horizon:nova:networks:index')
             exceptions.handle(request, msg, redirect=redirect)
@@ -150,11 +157,13 @@ class CreateNetwork(workflows.Workflow):
             api.quantum.subnet_create(request, **params)
             msg = _('Subnet "%s" was successfully created.') % data['cidr']
             LOG.debug(msg)
-        except Exception:
-            msg = _('Failed to create subnet "%(sub)s" for network "%(net)s".')
+        except Exception as e:
+            msg = _('Failed to create subnet "%(sub)s" for network "%(net)s": '
+                    ' %(reason)s')
             redirect = reverse('horizon:nova:networks:index')
             exceptions.handle(request,
-                              msg % {"sub": data['cidr'], "net": network.id},
+                              msg % {"sub": data['cidr'], "net": network.id,
+                                     "reason": e},
                               redirect=redirect)
             return False
 

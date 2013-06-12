@@ -1,6 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-#    Copyright 2012 OpenStack LLC
+# Copyright 2012 NEC Corporation All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -14,22 +14,18 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-version_info = {'branch_nick': u'LOCALBRANCH',
-                'revision_id': 'LOCALREVISION',
-                'revno': 0}
+import uuid
 
 
-HORIZON_VERSION = ['2012', '2', '5']
-YEAR, COUNT, REVISION = HORIZON_VERSION
-FINAL = False   # This becomes true at Release Candidate time
+def get_int_or_uuid(value):
+    """Check if a value is valid as UUID or an integer.
 
-
-def canonical_version_string():
-    return '.'.join(filter(None, HORIZON_VERSION))
-
-
-def version_string():
-    if FINAL:
-        return canonical_version_string()
-    else:
-        return '%s-dev' % (canonical_version_string(),)
+    This method is mainly used to convert floating IP id to the
+    appropriate type. For floating IP id, integer is used in Nova's
+    original implementation, but UUID is used in Quantum based one.
+    """
+    try:
+        uuid.UUID(value)
+        return value
+    except (ValueError, AttributeError):
+        return int(value)

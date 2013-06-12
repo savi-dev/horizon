@@ -19,7 +19,8 @@
 #    under the License.
 
 
-from django.utils.translation import ugettext as _
+from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
 from horizon import api
@@ -33,16 +34,18 @@ ADD_USER_URL = "horizon:syspanel:projects:create_user"
 
 class UpdateProjectQuotaAction(workflows.Action):
     ifcb_label = _("Injected File Content Bytes")
-    metadata_items = forms.IntegerField(min_value=0, label=_("Metadata Items"))
-    cores = forms.IntegerField(min_value=0, label=_("VCPUs"))
-    instances = forms.IntegerField(min_value=0, label=_("Instances"))
-    injected_files = forms.IntegerField(min_value=0, label=_("Injected Files"))
-    injected_file_content_bytes = forms.IntegerField(min_value=0,
+    metadata_items = forms.IntegerField(min_value=-1,
+            label=_("Metadata Items"))
+    cores = forms.IntegerField(min_value=-1, label=_("VCPUs"))
+    instances = forms.IntegerField(min_value=-1, label=_("Instances"))
+    injected_files = forms.IntegerField(min_value=-1,
+            label=_("Injected Files"))
+    injected_file_content_bytes = forms.IntegerField(min_value=-1,
                                                      label=ifcb_label)
-    volumes = forms.IntegerField(min_value=0, label=_("Volumes"))
-    gigabytes = forms.IntegerField(min_value=0, label=_("Gigabytes"))
-    ram = forms.IntegerField(min_value=0, label=_("RAM (MB)"))
-    floating_ips = forms.IntegerField(min_value=0, label=_("Floating IPs"))
+    volumes = forms.IntegerField(min_value=-1, label=_("Volumes"))
+    gigabytes = forms.IntegerField(min_value=-1, label=_("Gigabytes"))
+    ram = forms.IntegerField(min_value=-1, label=_("RAM (MB)"))
+    floating_ips = forms.IntegerField(min_value=-1, label=_("Floating IPs"))
 
     class Meta:
         name = _("Quota")
@@ -103,12 +106,19 @@ class UpdateProjectMembersAction(workflows.Action):
 
         # Get the default role
         try:
-            default_role = api.get_default_role(self.request).id
+            default_role = api.get_default_role(self.request)
+            # Default role is necessary to add members to a project
+            if default_role is None:
+                default = getattr(settings,
+                                  "OPENSTACK_KEYSTONE_DEFAULT_ROLE", None)
+                msg = _('Could not find default role "%s" in Keystone'
+                        % default)
+                raise exceptions.NotFound(msg)
         except:
             exceptions.handle(self.request,
                               err_msg,
                               redirect=reverse(INDEX_URL))
-        self.fields['default_role'].initial = default_role
+        self.fields['default_role'].initial = default_role.id
 
         # Get list of available users
         all_users = []
