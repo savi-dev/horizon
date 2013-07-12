@@ -1,0 +1,13 @@
+Hey,
+
+The following User has been request access to SAVI TB:
+User Info:
+Desired Username: {{ user.username }}
+Name: {{ user.get_full_name }}
+Email: {{ user.email }}
+University: {{ profile.university }}
+Date request sent: {{ user.date_joined }}
+
+
+Thanks for consideration,
+

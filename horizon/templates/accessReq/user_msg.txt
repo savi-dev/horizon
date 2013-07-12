@@ -1,0 +1,7 @@
+Hi {{ name }}
+
+
+Thanks for Registering with SAVI TB. You request to access SAVI has been sent to administrators. You will receive an email containing credential info shortly. 
+
+For any inquiry, you can contact the following email:
+{{ admin_email }}
