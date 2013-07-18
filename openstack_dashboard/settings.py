@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'horizon.dashboards.syspanel',
     'horizon.dashboards.settings',
     'openstack_auth',
+    'saviAccessRequest',
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Request Access to SAVI TB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+  
+</head>
+  <body>
+
+  <div class="container">
+
+  <div class="row">
+
+    {% if form.errors %}
+        <div class="span8">
+        <div class="alert alert-error">
+            Please correct the error{{ form.errors|pluralize }} below
+        </div>
+    {% endif %}
+    <form class="form-horizontal" id="registerHere" method='post' action=''>
+       {% csrf_token %}
+      <fieldset>
+        <legend>Request Access to SAVI Testbed</legend>
+        {% for field in form.visible_fields %}
+        <div class="control-group">
+
+          <label class="control-label" for="input01">{{ field.label }}</label>
+          <div class="controls">
+          {{ field }}
+          <p>{{ field.errors }}</p>
+          </div>
+       </div>
+       {% endfor %}
+    <div class="control-group">
+        <label class="control-label" for="input01"></label>
+          <div class="controls">
+           <button type="submit" class="btn btn-success" rel="tooltip" title="first tooltip">Submit My Request</button>
+
+          </div>
+
+    </div>
+
+
+
+      </fieldset>
+    </form>
+
+
+          </div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/bootstrap-transition.js"></script>
+
+
+
+  </body>
+</html>
+

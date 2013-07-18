@@ -13,7 +13,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-
+import logging
 from django import shortcuts
 from django.views import generic
 from django.views.decorators import vary
@@ -23,7 +23,7 @@ from openstack_auth.views import Login
 import horizon
 from horizon import exceptions
 
-
+LOG=logging.getLogger(__name__)
 def user_home(request):
     """ Reversible named view to direct a user to the appropriate homepage. """
     return shortcuts.redirect(horizon.get_user_home(request.user))

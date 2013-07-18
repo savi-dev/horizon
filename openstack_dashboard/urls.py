@@ -23,6 +23,7 @@ URL patterns for the OpenStack Dashboard.
 """
 
 from django.conf.urls.defaults import patterns, url, include
+from django.views.generic.simple import direct_to_template
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -33,6 +34,12 @@ import horizon
 urlpatterns = patterns('',
     url(r'^$', 'horizon.views.splash', name='splash'),
     url(r'^auth/', include('openstack_auth.urls')),
+    url(r'^request/$','saviAccessRequest.views.requestAccess',
+       {'success_url':'complete'}),
+    url(r'^request/complete$',
+                           direct_to_template,
+                           {'template': 'accessReq/complete.html'},
+                           name='complete'),
     url(r'', include(horizon.urls)))
 
 # Development static app and project media serving using the staticfiles app.

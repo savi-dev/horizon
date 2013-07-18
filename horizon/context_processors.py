@@ -69,5 +69,4 @@ def horizon(request):
                'available': [{'endpoint': region[1]+'_'+region[0], 'name':region[1]} for
                              region in available_regions]}
     context['regions'] = regions
-    
     return context
