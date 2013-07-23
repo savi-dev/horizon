@@ -39,6 +39,49 @@ LOG = logging.getLogger(__name__)
 DEFAULT_ROLE = None
 
 
+def list_projects():
+    username = getattr(settings, 'OPENSTACK_KEYSTONE_USERNAME')
+    password = getattr(settings, 'OPENSTACK_KEYSTONE_PASSWORD')
+    endpoint_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL')
+    tenant = getattr(settings, 'OPENSTACK_KEYSTONE_TENANT')
+    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+    conn = keystone_client.Client(username=username,
+                                  password=password,
+                                  tenant_name=tenant,
+                                  auth_url=endpoint_url,
+                                  insecure=insecure)
+    return conn.tenants.list()
+
+def get_project(project_id):
+    username = getattr(settings, 'OPENSTACK_KEYSTONE_USERNAME')
+    password = getattr(settings, 'OPENSTACK_KEYSTONE_PASSWORD')
+    endpoint_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL')
+    tenant = getattr(settings, 'OPENSTACK_KEYSTONE_TENANT')
+    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+    conn = keystone_client.Client(username=username,
+                                  password=password,
+                                  tenant_name=tenant,
+                                  auth_url=endpoint_url,
+                                  insecure=insecure)
+    return conn.tenants.get(project_id)
+
+class Tenant(base.APIDictWrapper):
+    """ Wrapper for a dict based on the tenant. """
+    _attrs = ['id', 'name', 'description']
+
+    def __init__(self, tenant, *args, **kwargs):
+        super(Tenant, self).__init__(tenant, *args, **kwargs)
+
+
+    def __unicode__(self):
+        return _("%(id)s-%(name)s (%(description)s )") \
+                     % {"id":self.id, "name": self.name,
+                        "description": self.description}
+
+    def __repr__(self):
+        return "<Tenant: %s>" % unicode(self)
+
+
 class Service(base.APIDictWrapper):
     """ Wrapper for a dict based on the service data from keystone. """
     _attrs = ['id', 'type', 'name']
