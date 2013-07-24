@@ -1,0 +1,15 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+
+{% block form_id %}openrc_download_form{% endblock %}
+{% block form_action %}{% url horizon:settings:project:index %}{% endblock %}
+
+{% block modal_id %}language_settings_modal{% endblock %}
+{% block modal-header %}{% trans "OpenStack API" %}{% endblock %}
+
+{% block modal-body %}
+<div>
+    {{ tables.render }}
+</div>
+{% endblock %}
+

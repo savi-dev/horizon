@@ -6,7 +6,7 @@ Created on July 11, 2013
 
 
 from  django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User 
 
 from  .models import RequestProfile
 
@@ -16,13 +16,13 @@ class RequestForm(forms.Form):
    username = forms.RegexField(regex=r'^\w+$',
                                 max_length=30,
                                 widget=forms.TextInput(attrs=attrs_dict),
-                                label=_("Desired Username"),
-                                error_messages={ 'invalid': _("This value must contain only letters, numbers and underscores.") })
-   first_name = forms.CharField(label=_("First Name"))
-   last_name = forms.CharField(label=_("Last Name"))
+                                label="Desired Username",
+                                error_messages={ 'invalid': "This value must contain only letters, numbers and underscores." })
+   first_name = forms.CharField(label="First Name")
+   last_name = forms.CharField(label="Last Name")
    email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict,maxlength=75)),
-                             label=_("Email address")) 
-   university = forms.CharField(label=_("University"))
+                             label="Email address") 
+   university = forms.CharField(label="University")
 
    def clean_username(self):
         try:
