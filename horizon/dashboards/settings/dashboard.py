@@ -23,7 +23,7 @@ import horizon
 class Settings(horizon.Dashboard):
     name = _("Settings")
     slug = "settings"
-    panels = ('user', 'project', 'ec2','projectmgmt')
+    panels = ('user', 'project', 'ec2','membership')
     default_panel = 'user'
     nav = False
 

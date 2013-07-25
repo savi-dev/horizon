@@ -1,0 +1,11 @@
+
+
+Hey there,
+
+FYI:
+
+User {{ username }} just left the project {{ project }}
+
+
+
+Best Regards,

@@ -32,6 +32,7 @@ def user_home(request):
 def get_user_home(user):
     if user.is_superuser:
         if next((tenant for tenant in user.authorized_tenants if tenant.name == "admin"), None):
+#             LOG.debug("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
             return horizon.get_dashboard('syspanel').get_absolute_url()
     return horizon.get_dashboard('nova').get_absolute_url()
 

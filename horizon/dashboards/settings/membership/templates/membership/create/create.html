@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}Send Request to Create Project{% endblock %}
+
+{% block page_header %}
+  {% include "horizon/common/_page_header.html" with title=_("Send Request to Create a Project") %}
+{% endblock page_header %}
+
+{% block main %}
+    {% include 'settings/membership/create/_create.html' %}
+{% endblock %}

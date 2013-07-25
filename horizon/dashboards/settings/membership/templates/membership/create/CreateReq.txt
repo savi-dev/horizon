@@ -1,0 +1,11 @@
+Hey there,
+
+
+User {{ username }} needs to Create a new project:
+
+Name: {{ projectName }}
+Description: {{ description }}
+
+
+
+Best Regards,

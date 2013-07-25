@@ -22,12 +22,14 @@
 General-purpose decorators for use with Horizon.
 """
 import functools
+import logging
 
 from django.utils.decorators import available_attrs
 from django.utils.translation import ugettext as _
 
 from horizon.exceptions import NotAuthorized, NotAuthenticated
 
+LOG = logging.getLogger(__name__)
 
 def _current_component(view_func, dashboard=None, panel=None):
     """ Sets the currently-active dashboard and/or panel on the request. """
@@ -78,7 +80,6 @@ def require_perms(view_func, required):
     # We only need to check each permission once for a view, so we'll use a set
     current_perms = getattr(view_func, '_required_perms', set([]))
     view_func._required_perms = current_perms | set(required)
-
     @functools.wraps(view_func, assigned=available_attrs(view_func))
     def dec(request, *args, **kwargs):
         if request.user.is_authenticated():
