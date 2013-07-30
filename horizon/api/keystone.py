@@ -65,6 +65,18 @@ def get_project(project_id):
                                   insecure=insecure)
     return conn.tenants.get(project_id)
 
+    username = getattr(settings, 'OPENSTACK_KEYSTONE_USERNAME')
+    password = getattr(settings, 'OPENSTACK_KEYSTONE_PASSWORD')
+    endpoint_url = getattr(settings, 'OPENSTACK_KEYSTONE_URL')
+    tenant = getattr(settings, 'OPENSTACK_KEYSTONE_TENANT')
+    insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
+    conn = keystone_client.Client(username=username,
+                                  password=password,
+                                  tenant_name=tenant,
+                                  auth_url=endpoint_url,
+                                  insecure=insecure)
+    return conn.users.update_password(user, new_passwd)
+
 class Tenant(base.APIDictWrapper):
     """ Wrapper for a dict based on the tenant. """
     _attrs = ['id', 'name', 'description']

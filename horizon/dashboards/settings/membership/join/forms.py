@@ -10,6 +10,7 @@ from django.core.mail import EmailMessage
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext_lazy as _
 
+from horizon import exceptions
 from horizon import forms
 from horizon import messages
 

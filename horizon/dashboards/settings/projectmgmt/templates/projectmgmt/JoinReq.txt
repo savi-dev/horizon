@@ -1,8 +1,0 @@
-Hey there,
-
-
-User {{ username }} needs to join project {{ project }}
-
-
-
-Best Regards,
