@@ -34,8 +34,8 @@ class IndexView(tables.MultiTableView):
         try:
             join_projects = api.keystone.list_projects()
             user_projects = self.request.user.authorized_tenants
-            for project in join_projects:
-                if next((tenant for tenant in user_projects if tenant.name == project.name), None):
+            for project in user_projects:
+               if next((tenant for tenant in join_projects if tenant.id == project.id), None):
                     join_projects.remove(project)
         except:
             join_projects = []
