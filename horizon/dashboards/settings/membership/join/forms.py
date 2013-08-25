@@ -10,6 +10,7 @@ from django.core.mail import EmailMessage
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext_lazy as _
 
+from horizon import exceptions
 from horizon import forms
 from horizon import messages
 
@@ -23,7 +24,7 @@ class CreateProjectForm(forms.SelfHandlingForm):
         try:
             admin = settings.ADMIN_EMAIL
             subject = "[HORIZON] New Project Create Request"
-            message = render_to_response('settings/projectmgmt/CreateReq.txt',
+            message = render_to_response('settings/membership/create/CreateReq.txt',
                                       {'username':request.user.username,
                                         'projectName': data['name'],
                                         'description':data['description'] })
@@ -32,7 +33,7 @@ class CreateProjectForm(forms.SelfHandlingForm):
             messages.success(request,
                              _('Successfully sent the request'))
         except:
-            redirect = reverse("horizon:settings:projectmgmt:index")
+            redirect = reverse("horizon:settings:membership:index")
             exceptions.handle(request,
                               _('Unable to send Request.'),
                               redirect=redirect)

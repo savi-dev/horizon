@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.utils.translation import ugettext_lazy as _
 
-
+from horizon import api
 from horizon import exceptions
 from horizon import messages
 from horizon import tables
@@ -24,53 +24,47 @@ def get_dscr(tenant):
     return tenant.description
 
 
-class JoinProject(tables.BatchAction):
-    name = "join"
-    action_present = _("Join")
-    action_past = _("Your request to join the project has been sent to admin")
+class LeaveProject(tables.BatchAction):
+    name = "Leave"
+    action_present = _("Leave")
+    action_past = _("You are successfully left the project")
     data_type_singular = _("Project")
     data_type_plural = _("Projects")
-    classes = ('btn-launch',)
+    classes = ('btn-danger',)
 
-    def allowed(self, request, project=None):
-        return True
+    def allowed(self, request, project_id=None):
+        if len(request.user.authorized_tenants) > 1:
+            return True
+        return False
+            
 
     def action(self, request, project_id):
         project = get_project(project_id)
         admin = settings.ADMIN_EMAIL
         try:
-            subject = "[HORIZON] New Access Request"
-            message = render_to_response('settings/projectmgmt/JoinReq.txt',
+            subject = "[HORIZON] User Leave Stat"
+            message = render_to_response('settings/membership/leave/leaveInfo.txt',
                                   {'username':request.user.username,
                                     'project': project.name })
             email = EmailMessage(subject, message, to=[admin])
             email.send()
-            messages.success(request,
-                             _('Successfully send the request'))
+            api.keystone.remove_tenant_user(request, project_id, request.user.id)
         except:
-            redirect = reverse("horizon:settings:projectmgmt:index")
+            redirect = reverse("horizon:settings:membership:index")
             exceptions.handle(request,
                               _('Unable to sent Request.'),
                               redirect=redirect)
 
 
-class CreateProject(tables.LinkAction):
-    name = "create"
-    verbose_name = _("Create Project")
-    url = "horizon:settings:projectmgmt:create"
-    classes = ("ajax-modal", "btn-create")
-
-
-class ProjectsTable(tables.DataTable):
+class LeaveProjectsTable(tables.DataTable):
     
     project_name = tables.Column('name', verbose_name=_("Project Name"))
     project_dscr = tables.Column(get_dscr,
                                  verbose_name=_("Description"))
 
     class Meta:
-        name = "projects"
-        verbose_name = _("Projects List")
-        table_actions = (CreateProject,)
-        row_actions = (JoinProject,)
+        name = "leaveproject"
+        verbose_name = _("Your Projects")
+        row_actions = (LeaveProject,)
 
     

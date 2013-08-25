@@ -2,7 +2,7 @@
 {% load i18n horizon humanize %}
 
 {% block form_id %}{% endblock %}
-{% block form_action %}{% url horizon:settings:projectmgmt:create %}{% endblock %}
+{% block form_action %}{% url horizon:settings:membership:join:create %}{% endblock %}
 
 {% block modal_id %}create_project_modal{% endblock %}
 {% block modal-header %}{% trans "Send Request to Create A New Project" %}{% endblock %}
@@ -21,5 +21,5 @@
 
 {% block modal-footer %}
   <input class="btn btn-primary pull-right" type="submit" value="{% trans "Send Request" %}" />
-  <a href="{% url horizon:settings:projectmgmt:index %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+  <a href="{% url horizon:settings:membership:index %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}

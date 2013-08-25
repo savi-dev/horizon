@@ -6,9 +6,8 @@ Created on July 23, 2013
 '''
 from django.conf.urls.defaults import patterns, url
 
-from .views import IndexView, CreateProjectView
+from .views import CreateProjectView
 
 
 urlpatterns = patterns('',
-    url(r'^$', IndexView.as_view(), name='index'),
     url(r'^create/$', CreateProjectView.as_view(), name='create'),)

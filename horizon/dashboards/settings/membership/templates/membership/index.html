@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans "Project Management" %}{% endblock %}
+{% block title %}Project Management{% endblock %}
 
 {% block page_header %}
   {% include "horizon/common/_page_header.html" with title=_("Project Management") %}
 {% endblock page_header %}
 
 {% block main %}
-  {% include "settings/projectmgmt/_projects.html" %}
+  <div>
+      {{ leaveproject_table.render }}
+  </div>
+
+  <div>
+      {{ joinproject_table.render }}
+  </div>
 {% endblock %}

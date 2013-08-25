@@ -13,19 +13,12 @@ from horizon import tables
 from horizon.api import keystone
 
 from .forms import CreateProjectForm
-from .tables import ProjectsTable
+from .tables import JoinProjectsTable
 
 LOG= logging.getLogger(__name__)
 
-class IndexView(tables.DataTableView):
-    table_class = ProjectsTable
-    template_name = 'settings/projectmgmt/index.html'
-
-    def get_data(self):
-        tenants = keystone.list_projects()
-        return tenants
 
 class CreateProjectView(forms.ModalFormView):
     form_class = CreateProjectForm
-    template_name = 'settings/projectmgmt/create.html'
-    success_url = reverse_lazy('horizon:settings:projectmgmt:index')
+    template_name = 'settings/membership/create/create.html'
+    success_url = reverse_lazy('horizon:settings:membership:index')
